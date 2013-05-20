@@ -92,12 +92,7 @@ int main() {
 
 		while(!third_valid) {
 			third_vertex = rand() % number_of_vertices;
-			printf("wylosowano %d\n",third_vertex);
-			if(third_vertex != first_vertex) 
-				printf("%d != %d\n", first_vertex, third_vertex);
-			if(third_vertex != second_vertex) 
-				printf("%d != %d\n", second_vertex, third_vertex);
-			if((third_vertex != first_vertex) && (third_vertex != second_vertex) && !(adjacency_matrix[first_vertex][third_vertex]) && !(adjacency_matrix[second_vertex][third_vertex]))
+			if((third_vertex != first_vertex) && (third_vertex != second_vertex) && !(adjacency_matrix[first_vertex][third_vertex]) && !(adjacency_matrix[second_vertex][third_vertex])) {
 				adjacency_matrix[first_vertex][second_vertex] = 1;
 				adjacency_matrix[first_vertex][third_vertex] = 1;
 				adjacency_matrix[second_vertex][first_vertex] = 1;
@@ -106,8 +101,9 @@ int main() {
 				adjacency_matrix[third_vertex][second_vertex] = 1;
 				number_of_edges -= 3;
 				third_valid++;
+			}
 		}
-		printf("3: %d\n===", third_vertex);
+		printf("3: %d\n===\n", third_vertex);
 
 
 		}
