@@ -65,10 +65,52 @@ int main() {
 		
 		int number_of_edges = (int) (((number_of_vertices*(number_of_vertices-1)) / 2) * density) - (number_of_vertices - 1);
 
-		for(int i = 0; i < number_of_edges; i++) {
-
+		if(display) {
+			printf("\n");
+			printf("Macierz:\n");
+			print_matrix(adjacency_matrix, number_of_vertices);
 		}
 
+		
+		while(number_of_edges >= 0) {
+		
+		int first_vertex = rand() % number_of_vertices;
+		printf("1: %d\n", first_vertex);
+		int second_vertex;
+		int second_valid = 0;
+
+		while(!second_valid) {
+			second_vertex = rand() % number_of_vertices;
+			if((first_vertex != second_vertex) && !(adjacency_matrix[first_vertex][second_vertex])) 
+				second_valid++;
+			
+		}
+		printf("2: %d\n", second_vertex);
+
+		int third_vertex;
+		int third_valid = 0;
+
+		while(!third_valid) {
+			third_vertex = rand() % number_of_vertices;
+			printf("wylosowano %d\n",third_vertex);
+			if(third_vertex != first_vertex) 
+				printf("%d != %d\n", first_vertex, third_vertex);
+			if(third_vertex != second_vertex) 
+				printf("%d != %d\n", second_vertex, third_vertex);
+			if((third_vertex != first_vertex) && (third_vertex != second_vertex) && !(adjacency_matrix[first_vertex][third_vertex]) && !(adjacency_matrix[second_vertex][third_vertex]))
+				adjacency_matrix[first_vertex][second_vertex] = 1;
+				adjacency_matrix[first_vertex][third_vertex] = 1;
+				adjacency_matrix[second_vertex][first_vertex] = 1;
+				adjacency_matrix[second_vertex][third_vertex] = 1;
+				adjacency_matrix[third_vertex][first_vertex] = 1;
+				adjacency_matrix[third_vertex][second_vertex] = 1;
+				number_of_edges -= 3;
+				third_valid++;
+		}
+		printf("3: %d\n===", third_vertex);
+
+
+		}
 
 		if(display) {
 			printf("\n");
