@@ -139,8 +139,8 @@ void adjacency_list_from_matrix(int **adjacency_matrix, int matrix_size, list **
 				add_to_list(&(adjacency_list_array[i]), j);
 			}
 		}
-		//printf("%d: ",i);
-		//print_list(adjacency_list_array[i]);
+		printf("%d: ",i);
+		print_list(adjacency_list_array[i]);
 	}
 }
 
@@ -169,7 +169,7 @@ void edge_list_from_adjacency_list(list **adjacency_list_array, int matrix_size,
 		while(pointer != NULL) {
 			edge_list[j][0] = i;
 			edge_list[j][1] = pointer->data;
-		//	printf("%d -> %d\n", edge_list[j][0], edge_list[j][1]);
+			printf("%d -> %d\n", edge_list[j][0], edge_list[j][1]);
 			j++;
 			pointer = pointer->next;
 		}
