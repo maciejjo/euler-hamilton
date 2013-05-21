@@ -75,8 +75,16 @@ int main() {
 		}
 
 		
-		do{	
+		int main_counter = 0;	
+		while(number_of_edges >= 3) {
+			if(main_counter == 100){
+				main_counter = 0;
+				printf("uwaga\n");
+				print_matrix(adjacency_matrix, number_of_vertices);
+				break;
+			}
 			int repeat = 0;
+		
 			int first_vertex = rand() % number_of_vertices;
 			int second_vertex;
 			int second_valid = 0;
@@ -122,6 +130,7 @@ int main() {
 				
 				counter++;
 			}
+			main_counter++;
 
 			if(repeat)
 				continue;
@@ -133,8 +142,7 @@ int main() {
 			printf("3: %d\n===\n", third_vertex);
 
 
-		}while(number_of_edges >= 0);
-
+		}
 		if(display) {
 			printf("\n");
 			printf("Macierz:\n");
