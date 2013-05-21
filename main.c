@@ -64,6 +64,9 @@ int main() {
 		}
 		
 		int number_of_edges = (int) (((number_of_vertices*(number_of_vertices-1)) / 2) * density) - (number_of_vertices - 1);
+		printf("Maksymalnie: %d\n", (number_of_vertices*(number_of_vertices-1)) / 2);
+		printf("Wygenerowano: %d\n", number_of_vertices);
+		printf("Poznostało to wygenerowania: %d\n", number_of_edges);
 
 		if(display) {
 			printf("\n");
@@ -72,41 +75,65 @@ int main() {
 		}
 
 		
-		while(number_of_edges >= 0) {
-		
-		int first_vertex = rand() % number_of_vertices;
-		printf("1: %d\n", first_vertex);
-		int second_vertex;
-		int second_valid = 0;
-
-		while(!second_valid) {
-			second_vertex = rand() % number_of_vertices;
-			if((first_vertex != second_vertex) && !(adjacency_matrix[first_vertex][second_vertex])) 
-				second_valid++;
+		do{	
+			int repeat = 0;
+			int first_vertex = rand() % number_of_vertices;
+			int second_vertex;
+			int second_valid = 0;
 			
-		}
-		printf("2: %d\n", second_vertex);
-
-		int third_vertex;
-		int third_valid = 0;
-
-		while(!third_valid) {
-			third_vertex = rand() % number_of_vertices;
-			if((third_vertex != first_vertex) && (third_vertex != second_vertex) && !(adjacency_matrix[first_vertex][third_vertex]) && !(adjacency_matrix[second_vertex][third_vertex])) {
-				adjacency_matrix[first_vertex][second_vertex] = 1;
-				adjacency_matrix[first_vertex][third_vertex] = 1;
-				adjacency_matrix[second_vertex][first_vertex] = 1;
-				adjacency_matrix[second_vertex][third_vertex] = 1;
-				adjacency_matrix[third_vertex][first_vertex] = 1;
-				adjacency_matrix[third_vertex][second_vertex] = 1;
-				number_of_edges -= 3;
-				third_valid++;
+			int counter = 0;
+			while(!second_valid) {
+				
+				if(counter >= 10) {
+					repeat = 1;
+					break;
+				}
+				
+				second_vertex = rand() % number_of_vertices;
+				if((first_vertex != second_vertex) && !(adjacency_matrix[first_vertex][second_vertex])) 
+					second_valid++;
+				
+				counter++;
+				
 			}
-		}
-		printf("3: %d\n===\n", third_vertex);
+
+			int third_vertex;
+			int third_valid = 0;
+		
+			counter = 0;
+			while(!repeat && !third_valid) {
+				
+				if(counter >= 10) {
+					repeat = 1;
+					break;
+				}
+
+				third_vertex = rand() % number_of_vertices;
+				if((third_vertex != first_vertex) && (third_vertex != second_vertex) && !(adjacency_matrix[first_vertex][third_vertex]) && !(adjacency_matrix[second_vertex][third_vertex])) {
+					adjacency_matrix[first_vertex][second_vertex] = 1;
+					adjacency_matrix[first_vertex][third_vertex] = 1;
+					adjacency_matrix[second_vertex][first_vertex] = 1;
+					adjacency_matrix[second_vertex][third_vertex] = 1;
+					adjacency_matrix[third_vertex][first_vertex] = 1;
+					adjacency_matrix[third_vertex][second_vertex] = 1;
+					number_of_edges -= 3;
+					third_valid++;
+				}
+				
+				counter++;
+			}
+
+			if(repeat)
+				continue;
+
+			printf("Pozostało: %d\n",number_of_edges);
+			
+			printf("1: %d\n", first_vertex);
+			printf("2: %d\n", second_vertex);
+			printf("3: %d\n===\n", third_vertex);
 
 
-		}
+		}while(number_of_edges >= 0);
 
 		if(display) {
 			printf("\n");
