@@ -8,7 +8,9 @@ void dfs_traversal_matrix(int **adjacency_matrix, int matrix_size, int *vertex_c
 void dfs_traversal_list(list **adjacency_list_array, int matrix_size, int *vertex_count, int *vertex_array, int *dfs_count, int *dfs_array, int vertex);
 void dfs_traversal_edge_list(int **edge_list, int edge_count, int *vertex_count, int *vertex_array, int *dfs_count, int *dfs_array, int vertex);
 void fill_adjacency_matrix_dfg(int **adjacency_matrix, int matrix_size, float density);
+void fill_adjacency_matrix_loop(int **adjacency_matrix, int number_of_vertices);
 void mirror_adjacency_matrix(int **input_matrix, int matrix_size, int **output_matrix);
+void fill_adjacency_matrix_cycles(int **adjacency_matrix, int number_of_vertices, float density);
 void adjacency_list_from_matrix(int **adjacency_matrix, int matrix_size, list **adjacency_list_array);
 void edge_list_from_adjacency_list(list **adjacency_list_array, int matrix_size, int**edge_list);
 void previous_list(list **adjacency_list_array, int matrix_size, list **previous_list);

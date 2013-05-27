@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "list.h"
+#include "arrays.h"
 
 void euler_path(list **cykl, list *stos, list **adjacency_list_array, int current_vertex) {
 
@@ -84,7 +85,7 @@ int hamilton_path(int *cycle_count, int *cycle_array, int *visited_count, int *v
 		}
 		if(!visited_array[pointer->data]) {
 			if(hamilton_path(cycle_count, cycle_array, visited_count, visited_array, adjacency_list_array, vertex_count, pointer->data, first_vertex)) {
-				cycle_array[(*cycle_count)++] = current_vertex;
+				cycle_array[++(*cycle_count)] = current_vertex;
 				return 1;
 			}
 		}
@@ -228,6 +229,82 @@ void fill_adjacency_matrix_dfg(int **adjacency_matrix, int matrix_size, float de
 	}
 }
 
+void fill_adjacency_matrix_loop(int **adjacency_matrix, int number_of_vertices) {
+	
+	int *graph_loop = return_array(number_of_vertices);
+	fill_array_with_unique_random(graph_loop, number_of_vertices);
+
+	for(int i = 0; i<number_of_vertices; i++) {
+		if(i == 0) {
+			adjacency_matrix[graph_loop[i]][graph_loop[i+1]] = 1;
+			adjacency_matrix[graph_loop[i]][graph_loop[number_of_vertices-1]] = 1;
+		}
+		else if(i < (number_of_vertices - 1)) {
+			adjacency_matrix[graph_loop[i]][graph_loop[i+1]] = 1;
+			adjacency_matrix[graph_loop[i]][graph_loop[i-1]] = 1;
+		} 
+		else {
+			adjacency_matrix[graph_loop[i]][graph_loop[i-1]] = 1;
+			adjacency_matrix[graph_loop[i]][graph_loop[0]] = 1;
+		}
+	}
+}
+		
+void fill_adjacency_matrix_cycles(int **adjacency_matrix, int number_of_vertices, float density) {
+	int number_of_edges = (int) (((number_of_vertices*(number_of_vertices-1)) / 2) * density) - (number_of_vertices - 1);
+
+	while(number_of_edges >= 3) {
+		int repeat = 0;
+	
+		int first_vertex = rand() % number_of_vertices;
+		int second_vertex;
+		int second_valid = 0;
+		
+		int counter = 0;
+		while(!second_valid) {
+			
+			if(counter >= 10) {
+				repeat = 1;
+				break;
+			}
+			
+			second_vertex = rand() % number_of_vertices;
+			if((first_vertex != second_vertex) && !(adjacency_matrix[first_vertex][second_vertex])) 
+				second_valid++;
+			
+			counter++;
+			
+		}
+
+		int third_vertex;
+		int third_valid = 0;
+	
+		counter = 0;
+		while(!repeat && !third_valid) {
+			
+			if(counter >= 10) {
+				repeat = 1;
+				break;
+			}
+
+			third_vertex = rand() % number_of_vertices;
+			if((third_vertex != first_vertex) && (third_vertex != second_vertex) && !(adjacency_matrix[first_vertex][third_vertex]) && !(adjacency_matrix[second_vertex][third_vertex])) {
+				adjacency_matrix[first_vertex][second_vertex] = 1;
+				adjacency_matrix[first_vertex][third_vertex] = 1;
+				adjacency_matrix[second_vertex][first_vertex] = 1;
+				adjacency_matrix[second_vertex][third_vertex] = 1;
+				adjacency_matrix[third_vertex][first_vertex] = 1;
+				adjacency_matrix[third_vertex][second_vertex] = 1;
+				number_of_edges -= 3;
+				third_valid++;
+			}
+			
+			counter++;
+		}
+	}
+}
+
+
 void adjacency_list_from_matrix(int **adjacency_matrix, int matrix_size, list **adjacency_list_array) {
 
 	for(int i = 0; i < matrix_size; i++) {
@@ -236,8 +313,6 @@ void adjacency_list_from_matrix(int **adjacency_matrix, int matrix_size, list **
 				add_to_list(&(adjacency_list_array[i]), j);
 			}
 		}
-		printf("%d:\n",i);
-		print_list(adjacency_list_array[i]);
 	}
 }
 

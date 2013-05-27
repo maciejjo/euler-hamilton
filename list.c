@@ -60,13 +60,9 @@ int get_last_element(list *stack) {
 
 
 void print_list(list *node) {
-	int i = 1;
 	while(node != NULL) {
-		printf("-> %d\t", node->data);
+		printf("%d ", node->data);
 		node = node->next;
-		if(!(i % 10))
-			printf("\n");
-		i++;
 	}
-	printf("->\n");
+	printf("\n");
 }
