@@ -6,14 +6,13 @@
 #include "arrays.h"
 #include "graph.h"
 #include "list.h"
-
+		
 int main() {
 	
 	int number_of_vertices = 10;
-	float density = 0.3;
 	int display = 1;
-	int write_to_file = 1;
-	char *filename = "pomiary.csv";
+	//int write_to_file = 1;
+	//char *filename = "pomiary.csv";
 	//time_t start, stop;
 	
 	srand(time(NULL));
@@ -21,7 +20,7 @@ int main() {
 	printf("Algorytmy grafowe\n\n");
 	
 
-	FILE *output_file = NULL;
+/*	FILE *output_file = NULL;
 	int file_opened = 0;
 	if(write_to_file) {
 		if(strcmp(filename, "") != 0) {
@@ -29,10 +28,13 @@ int main() {
 			file_opened = 1;
 		}
 	}
+*/
+
+	float density[] = { 0.3, 0.7 };
 
 	for(int i = 0; i < 2; i++) {	
 		//Tworzenie spójnej macierzy
-		printf("Generowanie macierzy n=%d wierzchołków...\n", number_of_vertices);
+		printf("Generowanie macierzy n=%d wierzchołków... Wypełnienie %.0f%%\n", number_of_vertices, 100*density[i]);
 		int **adjacency_matrix = (int **) malloc(number_of_vertices * sizeof(int *));
 		for (int i = 0; i<number_of_vertices;i++) {
 			adjacency_matrix[i] = (int *) malloc(number_of_vertices * sizeof(int));
@@ -63,24 +65,12 @@ int main() {
 			}
 		}
 		
-		int number_of_edges = (int) (((number_of_vertices*(number_of_vertices-1)) / 2) * density) - (number_of_vertices - 1);
-		printf("Maksymalnie: %d\n", (number_of_vertices*(number_of_vertices-1)) / 2);
-		printf("Wygenerowano: %d\n", number_of_vertices);
-		printf("Poznostało to wygenerowania: %d\n", number_of_edges);
+		int number_of_edges = (int) (((number_of_vertices*(number_of_vertices-1)) / 2) * density[i]) - (number_of_vertices - 1);
 
-		if(display) {
-			printf("\n");
-			printf("Macierz:\n");
-			print_matrix(adjacency_matrix, number_of_vertices);
-		}
-
-		
 		int main_counter = 0;	
 		while(number_of_edges >= 3) {
 			if(main_counter == 100){
 				main_counter = 0;
-				printf("uwaga\n");
-				print_matrix(adjacency_matrix, number_of_vertices);
 				break;
 			}
 			int repeat = 0;
@@ -131,18 +121,10 @@ int main() {
 				counter++;
 			}
 			main_counter++;
-
-			if(repeat)
-				continue;
-
-			printf("Pozostało: %d\n",number_of_edges);
-			
-			printf("1: %d\n", first_vertex);
-			printf("2: %d\n", second_vertex);
-			printf("3: %d\n===\n", third_vertex);
-
-
 		}
+
+
+
 		if(display) {
 			printf("\n");
 			printf("Macierz:\n");
@@ -153,12 +135,44 @@ int main() {
 		if(display) {
 			printf("\nLista następników:\n");
 		}
+		printf("\n");
 		list **adjacency_list_array = (list **) malloc(number_of_vertices* sizeof(list*));
+		list **adjacency_list_array_2 = (list **) malloc(number_of_vertices* sizeof(list*));
 		adjacency_list_from_matrix(adjacency_matrix, number_of_vertices, adjacency_list_array);
+		adjacency_list_from_matrix(adjacency_matrix, number_of_vertices, adjacency_list_array_2);
 
-		density = 0.7;
+		printf("\n");
+
+		
+		list *stos = NULL;
+		list *cykl = NULL;
+
+		euler_path(&cykl, stos, adjacency_list_array, 0);
+
+
+		printf("\nCYKL: \n");
+		print_list(cykl);
+		printf("\n");
+
+	
+		int *visited_array = return_array(number_of_vertices);
+		int *cycle_array = return_array(number_of_vertices);
+		int visited_count = 0;
+		int cycle_count = 0;
+		
+		hamilton_path(&cycle_count, cycle_array, &visited_count, visited_array, adjacency_list_array, number_of_vertices,0,0);
+		print_array(cycle_array, number_of_vertices);
+
+
+
+
+					
+
+
+
+
 	}
     	
-	if(file_opened) fclose(output_file);
+	//if(file_opened) fclose(output_file);
 	return 0;
 }

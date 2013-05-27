@@ -2,6 +2,8 @@
 #define GRAPH_H
 #include "list.h"
 
+void euler_path(list **cykl, list *stos, list **adjacency_list_array, int current_vertex);
+int hamilton_path(int *cycle_count, int *cycle_array, int *visited_count, int *visited_array, list **adjacency_list_array, int vertex_count, int current_vertex, int first_vertex);
 void dfs_traversal_matrix(int **adjacency_matrix, int matrix_size, int *vertex_count, int *vertex_array, int *dfs_count, int *dfs_array, int vertex);
 void dfs_traversal_list(list **adjacency_list_array, int matrix_size, int *vertex_count, int *vertex_array, int *dfs_count, int *dfs_array, int vertex);
 void dfs_traversal_edge_list(int **edge_list, int edge_count, int *vertex_count, int *vertex_array, int *dfs_count, int *dfs_array, int vertex);

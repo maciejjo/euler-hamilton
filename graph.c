@@ -2,6 +2,103 @@
 #include <stdio.h>
 #include "list.h"
 
+void euler_path(list **cykl, list *stos, list **adjacency_list_array, int current_vertex) {
+
+	add_to_list(&stos, current_vertex);
+	int found = 0;
+	list *first_vertex = adjacency_list_array[current_vertex];
+
+	while(!found) {
+		if(first_vertex != NULL) {
+			if(!(first_vertex->visited)) {
+				found = 1;
+				break;
+			}
+			else
+				first_vertex = first_vertex->next;
+		}
+		else
+			break;
+	}
+
+	if(found) {
+		first_vertex->visited = 1;
+		list *second_vertex = adjacency_list_array[first_vertex->data];
+		while(second_vertex->data != current_vertex) {
+				second_vertex = second_vertex->next;
+		}
+		second_vertex->visited = 1;
+		euler_path(cykl, stos, adjacency_list_array, first_vertex->data);
+	}
+	else {
+		int next = 0;
+		while(!next) {
+			if(!(*cykl)) {
+				add_to_list(cykl, get_last_element(stos));
+			}
+			else if(get_last_element(*cykl) != get_last_element(stos)) {
+				add_to_list(cykl, get_last_element(stos));
+			}
+			pop_from_stack(&stos);
+			
+			int found_adj = 0;
+			if(stos) {
+				list *pointer = adjacency_list_array[get_last_element(stos)];
+				while(!found_adj) {
+					if(pointer) {
+
+						if(!(pointer->visited)) {
+							found_adj = 1;
+							break;
+						}
+						else
+							pointer = pointer->next;
+					}
+					else
+						break;
+				}
+					if(found_adj)
+						next = 1;
+			}
+			else
+				break;
+		}
+		if(next)
+			euler_path(cykl, stos, adjacency_list_array, get_last_element(stos));
+	}
+		
+}
+
+int hamilton_path(int *cycle_count, int *cycle_array, int *visited_count, int *visited_array, list **adjacency_list_array, int vertex_count, int current_vertex, int first_vertex) {
+	
+	visited_array[current_vertex] = 1;
+	(*visited_count)++;
+
+	list *pointer = adjacency_list_array[current_vertex];
+	while(pointer) {
+		if(pointer->data == first_vertex) {
+			if(*visited_count == vertex_count) {
+				cycle_array[0] = current_vertex;
+				return 1;
+			}
+		}
+		if(!visited_array[pointer->data]) {
+			if(hamilton_path(cycle_count, cycle_array, visited_count, visited_array, adjacency_list_array, vertex_count, pointer->data, first_vertex)) {
+				cycle_array[(*cycle_count)++] = current_vertex;
+				return 1;
+			}
+		}
+		pointer = pointer->next;
+	}
+
+	visited_array[current_vertex] = 0;
+	(*visited_count)--;
+	return 0;
+
+
+}
+	
+
 void dfs_traversal_matrix(int **adjacency_matrix, int matrix_size, int *vertex_count, int *vertex_array, int *dfs_count, int *dfs_array, int vertex) {
 	
 	//Dodawanie do listy odwiedzonych i zwiększenie licznika odwiedzonych
@@ -139,7 +236,7 @@ void adjacency_list_from_matrix(int **adjacency_matrix, int matrix_size, list **
 				add_to_list(&(adjacency_list_array[i]), j);
 			}
 		}
-		printf("%d: ",i);
+		printf("%d:\n",i);
 		print_list(adjacency_list_array[i]);
 	}
 }
