@@ -4,8 +4,11 @@
 #include "arrays.h"
 
 void euler_path(list **cykl, list *stos, list **adjacency_list_array, int current_vertex) {
-
+	
+	//Dodajemy obecny wierzchołek na stos
 	add_to_list(&stos, current_vertex);
+
+	//Poszukujemy dziecka obecnego wierzchołka tylko na nieodwiedzonych krawędziach
 	int found = 0;
 	list *first_vertex = adjacency_list_array[current_vertex];
 
@@ -22,32 +25,50 @@ void euler_path(list **cykl, list *stos, list **adjacency_list_array, int curren
 			break;
 	}
 
+	//Jeśli takie dziecko jest znalezione trzeba oznaczyć krawędź jako odwiedzoną
+	//w obu listach sąsiedztwa (wierzchołka i dziecka)
 	if(found) {
+		//Oznaczanie odwiedzenia w pierwszej liście
 		first_vertex->visited = 1;
+
 		list *second_vertex = adjacency_list_array[first_vertex->data];
 		while(second_vertex->data != current_vertex) {
 				second_vertex = second_vertex->next;
 		}
+		//Oznaczanie odwiedzenia w drugiej liście
 		second_vertex->visited = 1;
+
+		//Następnie przechodzimy rekurencyjnie do tego dziecka
 		euler_path(cykl, stos, adjacency_list_array, first_vertex->data);
 	}
+
+	//Jeśli takie dziecko nie zostało znalezione (wierzchołek nie ma już żadnych krawędzi
+	//gdzie moglibyśmy pójść) musimy zdejmować elementy ze stosu i przekładać je na
+	//wynikową listę tak długo aż nie znajdziemy takiego wierzchołka który ma jeszcze krawędzie
 	else {
 		int next = 0;
 		while(!next) {
+			//Jeśli lista wynikowa jest pusta to po prostu wkładamy na nią wierzchołek ze stosu
 			if(!(*cykl)) {
 				add_to_list(cykl, get_last_element(stos));
 			}
+			//Jeśli nie jest pusta musimy sprawdzić czy ostatnio położony wierzchołek nie jest
+			//tym samym wierzchołkiem który wkładamy obecnie
 			else if(get_last_element(*cykl) != get_last_element(stos)) {
 				add_to_list(cykl, get_last_element(stos));
 			}
 			pop_from_stack(&stos);
 			
+			//Po przełożeniu wierzchołka ze stosu na listę sprawdzamy czy następny wierzchołek na stosie
+			//ma jeszcze nieodwiedzone krawędzie
 			int found_adj = 0;
 			if(stos) {
+				//Przejeżdżamy wskaźnikiem po liście sąsiedztwa w poszukiwaniu nieodwiedzonych krawędzi
 				list *pointer = adjacency_list_array[get_last_element(stos)];
 				while(!found_adj) {
 					if(pointer) {
-
+						
+						//Jeśli znajdziemy przerywamy pętlę
 						if(!(pointer->visited)) {
 							found_adj = 1;
 							break;
@@ -55,15 +76,22 @@ void euler_path(list **cykl, list *stos, list **adjacency_list_array, int curren
 						else
 							pointer = pointer->next;
 					}
+					//Jeśli przejdziemy całą listę sąsiedztwa i nie znajdziemy to przerywamy i następny
+					//element stosu zostaje sprawdzony
 					else
 						break;
 				}
+					//Jeśli znajdziemy na stosie wierzchołek który ma następnika to przerywamy pętlę 
+					//odkładania elementów ze stosu bo musimy go odwiedzić
 					if(found_adj)
 						next = 1;
 			}
+			//Jeśli stos jest pusty przerywamy pętlę odkładania elementów ze stosu
 			else
 				break;
 		}
+		//Jeśli przerwaliśmy pętlę stosu bo znaleźliśmy element który ma jeszcze krawędzie musimy na nim 
+		//rekurencyjnie wykonać algorytm aby go odwiedzić
 		if(next)
 			euler_path(cykl, stos, adjacency_list_array, get_last_element(stos));
 	}
